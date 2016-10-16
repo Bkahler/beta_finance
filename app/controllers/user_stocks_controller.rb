@@ -25,7 +25,7 @@ class UserStocksController < ApplicationController
   # POST /user_stocks.json
   def create
     if params[:stock_id].present?
-      @user_stock = UserStock.new(stock_id: params[:stock_id], user: current_user)
+      @user_stock = UserStock.new(stock_id: params[:stock_id], user: current_user, count: params[:count])
     else
       stock = Stock.find_by_ticker(params[:stock_ticker])
       if stock
@@ -33,14 +33,13 @@ class UserStocksController < ApplicationController
       else
         stock = Stock.new_from_lookup(params[:stock_ticker])
         if stock.save
-          @user_stock = UserStock.new(stock_id: stock.id, user: current_user)
+          @user_stock = UserStock.new(stock_id: stock.id, user: current_user, count: params[:count])
         else
           @user_stock = nil
           flash[:error] = "Stock is not available"
         end
       end
     end
-
     respond_to do |format|
       if @user_stock.save
         format.html { redirect_to my_portfolio_path,

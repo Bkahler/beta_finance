@@ -27,15 +27,19 @@
       <strong>Symbol: </strong><%=@stock.ticker%>
       <strong>Name: </strong><%=@stock.name%>
       <strong>Price: </strong><%=@stock.price%>
+      <strong>STOCKID: </strong><%=@stock.id%>
       <% if current_user.can_add_stock?(@stock.ticker) %>
-        <%= link_to "Add to portfolio",
-          user_stocks_path(
-              user: current_user,
-              stock_ticker: @stock.ticker,
-              stock_id: @stock.id ? @stock.id : ''),
-          class: "btn btn-xs btn-success",
-          method: :post
-        %>
+        <%= form_tag("/user_stocks", method: "post") do %>
+          <%= hidden_field_tag :user, current_user %>
+          <%= hidden_field_tag :stock_ticker, @stock.ticker %>
+          <%= hidden_field_tag :stock_id, @stock.id ? @stock.id : '' %>
+          <div class="field">
+            <%= label_tag :count %><br>
+            <%= text_field_tag :count %>
+          </div>
+          <%= submit_tag("Add Stock") %>
+        <% end %>
+
       <% else %>
         <span class="label label-default">
           Stock cannot be added because you have already added

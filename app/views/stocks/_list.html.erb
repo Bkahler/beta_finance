@@ -4,6 +4,8 @@
       <th>Name</th>
       <th>Symbol</th>
       <th>Current Price</th>
+      <th>Number Owned</th>
+      <th>Portfolio Value</th>
       <% if @user.id == current_user.id %>
         <th> Action</th>
       <% end %>
@@ -12,12 +14,14 @@
   <tbody>
     <% @user_stocks.each do |user_stock| %>
       <tr>
-        <td><%=user_stock.name%> </td>
-        <td><%=user_stock.ticker%> </td>
-        <td><%=user_stock.price%> </td>
+        <td><%=user_stock.stock.name%> </td>
+        <td><%=user_stock.stock.ticker%> </td>
+        <td><%=user_stock.stock.price%> </td>
+        <td><%=user_stock.count%> </td>
+        <td><%=number_to_currency(user_stock.count * (user_stock.stock.price.to_f || 0))%> </td>
         <% if @user.id == current_user.id %>
           <td> <%= link_to 'remove stock',
-                            user_stock_path(user_stock),
+                            user_stock_path(user_stock.stock),
                             :method => :delete,
                             :data => {:confirm => "Are you sure?"},
                             :class => "btn btn-danger btn-xs"
